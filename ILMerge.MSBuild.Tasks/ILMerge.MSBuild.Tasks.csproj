@@ -27,6 +27,14 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseWithoutMerge|AnyCPU' ">
+    <OutputPath>bin\ReleaseWithoutMerge\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ILMerge, Version=2.0.7.228, Culture=neutral, PublicKeyToken=736440c9b414ea16, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -49,6 +57,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>ILMerge.exe /internalize /ndebug /out:$(TargetFileName) $(TargetFileName) ILMerge.exe</PostBuildEvent>
+    <PostBuildEvent>IF NOT "$(ConfigurationName)"=="ReleaseWithoutMerge" ILMerge.exe /internalize /ndebug /out:$(TargetFileName) $(TargetFileName) ILMerge.exe</PostBuildEvent>
   </PropertyGroup>
 </Project>
