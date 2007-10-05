@@ -40,6 +40,7 @@ namespace ILMerge.NAnt.Tasks
     using global::NAnt.Core.Attributes;
     using global::NAnt.Core.Types;
     using global::NAnt.Core.Util;
+using System.Collections.Generic;
 
     [TaskName("ilmerge")]
     public class ILMergeTask : Task
@@ -51,6 +52,7 @@ namespace ILMerge.NAnt.Tasks
         private bool m_debugInfo;
         private string m_excludeFile;
         private bool m_internalize;
+        private FileSet m_libraryPath;
         private bool m_log;
         private string m_logFile;
         private string m_outputFile;
@@ -113,7 +115,14 @@ namespace ILMerge.NAnt.Tasks
             set { m_internalize = value; }
         }
 
-        [TaskAttribute("log")]
+        [TaskAttribute("librarypath")]
+        public virtual FileSet LibraryPath
+        {
+            get { return m_libraryPath; }
+            set { m_libraryPath = value; }
+        }
+
+        [TaskAttribute("shouldlog")]
         [BooleanValidator()]
         public virtual bool ShouldLog
         {
@@ -214,7 +223,14 @@ namespace ILMerge.NAnt.Tasks
             }
 
             ILMerge.SetInputAssemblies(assemblies);
-            ILMerge.SetSearchDirectories(new string[] { "." });
+
+            List<string> searchPath = new List<string>();
+            searchPath.Add(".");
+            foreach (string libpath in LibraryPath.FileNames)
+            {
+                searchPath.Add(libpath);
+            }
+            ILMerge.SetSearchDirectories(searchPath.ToArray());
 
             try
             {

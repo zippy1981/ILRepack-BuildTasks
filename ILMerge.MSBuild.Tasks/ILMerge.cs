@@ -38,25 +38,27 @@ namespace ILMerge.NAnt.Tasks
 
     using global::Microsoft.Build.Framework;
     using global::Microsoft.Build.Utilities;
+    using System.Collections.Generic;
 
     public class ILMerge : Task
     {
 
-        private ITaskItem m_attributeFile;
+        private string m_attributeFile;
         private bool m_closed;
         private bool m_copyAttributes;
         private bool m_debugInfo;
-        private ITaskItem m_excludeFile;
+        private string m_excludeFile;
         private bool m_internalize;
+        private ITaskItem[] m_libraryPath;
         private bool m_log;
-        private ITaskItem m_logFile;
-        private ITaskItem m_outputFile;
-        private ITaskItem m_keyFile;
+        private string m_logFile;
+        private string m_outputFile;
+        private string m_keyFile;
         private ITaskItem[] m_assemblies;
-        private ITaskItem m_targetKind;
+        private ILMerging.ILMerge.Kind m_targetKind;
         private ILMerging.ILMerge ILMerger;
 
-        public virtual ITaskItem AttributeFile
+        public virtual string AttributeFile
         {
             get
             {
@@ -83,7 +85,7 @@ namespace ILMerge.NAnt.Tasks
             set { m_debugInfo = value; }
         }
 
-        public virtual ITaskItem ExcludeFile
+        public virtual string ExcludeFile
         {
             get
             {
@@ -98,13 +100,19 @@ namespace ILMerge.NAnt.Tasks
             set { m_internalize = value; }
         }
 
+        public virtual ITaskItem[] LibraryPath
+        {
+            get { return m_libraryPath; }
+            set { m_libraryPath = value; }
+        }
+
         public virtual bool ShouldLog
         {
             get { return m_log; }
             set { m_log = value; }
         }
 
-        public virtual ITaskItem LogFile
+        public virtual string LogFile
         {
             get
             {
@@ -114,7 +122,7 @@ namespace ILMerge.NAnt.Tasks
         }
 
         [Required]
-        public virtual ITaskItem OutputFile
+        public virtual string OutputFile
         {
             get
             {
@@ -123,7 +131,7 @@ namespace ILMerge.NAnt.Tasks
             set { m_outputFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
-        public virtual ITaskItem SnkFile
+        public virtual string SnkFile
         {
             get
             {
@@ -139,15 +147,19 @@ namespace ILMerge.NAnt.Tasks
             set { m_assemblies = value; }
         }
 
-        public virtual ITaskItem TargetKind
+        public virtual string TargetKind
         {
-            get { return m_targetKind; }
+            get { return m_targetKind.ToString(); }
             set
             {
-                m_targetKind = ConvertEmptyToNull(value);
-                if (m_targetKind == null || m_targetKind.ItemSpec == null)
+                if (Enum.IsDefined(typeof(ILMerging.ILMerge.Kind), value))
                 {
-                    m_targetKind = new TaskItem("sameasprimary");
+                    m_targetKind = (ILMerging.ILMerge.Kind) Enum.Parse(typeof(ILMerging.ILMerge.Kind), value);
+                }
+                else
+                {
+                    Log.LogWarning("TargetKind should be [Exe|Dll|WinExe|SameAsPrimaryAssembly]; set to SameAsPrimaryAssembly");
+                    m_targetKind = ILMerging.ILMerge.Kind.SameAsPrimaryAssembly;
                 }
             }
         }
@@ -155,32 +167,17 @@ namespace ILMerge.NAnt.Tasks
         public override bool Execute()
         {
             ILMerger = new ILMerging.ILMerge();
-            ILMerger.AttributeFile = m_attributeFile.ItemSpec;
+            ILMerger.AttributeFile = m_attributeFile;
             ILMerger.Closed = m_closed;
             ILMerger.CopyAttributes = m_copyAttributes;
             ILMerger.DebugInfo = m_debugInfo;
-            ILMerger.ExcludeFile = m_excludeFile.ItemSpec;
+            ILMerger.ExcludeFile = m_excludeFile;
             ILMerger.Internalize = m_internalize;
-            ILMerger.LogFile = m_logFile.ItemSpec;
+            ILMerger.LogFile = m_logFile;
             ILMerger.Log = m_log;
-            ILMerger.OutputFile = m_outputFile.ItemSpec;
-            ILMerger.KeyFile = m_keyFile.ItemSpec;
-
-            switch (m_targetKind.ItemSpec.ToLower())
-            {
-                case "winexe":
-                    ILMerger.TargetKind = ILMerging.ILMerge.Kind.WinExe; break;
-                case "exe":
-                    ILMerger.TargetKind = ILMerging.ILMerge.Kind.Exe; break;
-                case "dll":
-                    ILMerger.TargetKind = ILMerging.ILMerge.Kind.Dll; break;
-                case "sameasprimary":
-                    ILMerger.TargetKind = ILMerging.ILMerge.Kind.SameAsPrimaryAssembly;
-                    break;
-                default:
-                    Log.LogError("TargetKind should be [exe|dll|winexe|sameasprimary]");
-                    return false;
-            }
+            ILMerger.OutputFile = m_outputFile;
+            ILMerger.KeyFile = m_keyFile;
+            ILMerger.TargetKind = m_targetKind;
 
             string[] assemblies = new string[m_assemblies.Length];
             for (int i = 0; i < assemblies.Length; i++)
@@ -189,11 +186,18 @@ namespace ILMerge.NAnt.Tasks
             }
 
             ILMerger.SetInputAssemblies(assemblies);
-            ILMerger.SetSearchDirectories(new string[] { "." });
+
+            List<string> searchPath = new List<string>();
+            searchPath.Add(".");
+            foreach (ITaskItem iti in LibraryPath)
+            {
+                searchPath.Add(BuildPath(iti.ItemSpec));
+            }
+            ILMerger.SetSearchDirectories(searchPath.ToArray());
 
             try
             {
-                Log.LogMessage(MessageImportance.Normal, "Merging {0} assembl{1} to '{2}'.", this.m_assemblies.Length, (this.m_assemblies.Length != 1) ? "ies" : "y", this.m_outputFile.ItemSpec);
+                Log.LogMessage(MessageImportance.Normal, "Merging {0} assembl{1} to '{2}'.", this.m_assemblies.Length, (this.m_assemblies.Length != 1) ? "ies" : "y", this.m_outputFile);
                 ILMerger.Merge();
             }
             catch (Exception e)
@@ -205,17 +209,15 @@ namespace ILMerge.NAnt.Tasks
             return true;
         }
 
-        private ITaskItem ConvertEmptyToNull(ITaskItem iti)
+        private string ConvertEmptyToNull(string iti)
         {
-            iti.ItemSpec = (iti.ItemSpec == null || iti.ItemSpec.Length == 0) ? null : iti.ItemSpec;
-            return iti;
+            return string.IsNullOrEmpty(iti) ? null : iti;
         }
 
-        private ITaskItem BuildPath(ITaskItem iti)
+        private string BuildPath(string iti)
         {
-            iti.ItemSpec = (iti.ItemSpec == null || iti.ItemSpec.Length == 0) ? null :
-                System.IO.Path.Combine(BuildEngine.ProjectFileOfTaskNode, iti.ItemSpec);
-            return iti;
+            return string.IsNullOrEmpty(iti) ? null :
+                System.IO.Path.Combine(BuildEngine.ProjectFileOfTaskNode, iti);
         }
     }
 }
