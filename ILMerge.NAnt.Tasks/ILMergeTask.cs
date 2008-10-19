@@ -226,9 +226,10 @@ using System.Collections.Generic;
 
             List<string> searchPath = new List<string>();
             searchPath.Add(".");
-            foreach (string libpath in LibraryPath.FileNames)
-            {
-                searchPath.Add(libpath);
+            if (LibraryPath != null) {
+               foreach (string libpath in LibraryPath.FileNames) {
+                  searchPath.Add(libpath);
+               }
             }
             ILMerge.SetSearchDirectories(searchPath.ToArray());
 
