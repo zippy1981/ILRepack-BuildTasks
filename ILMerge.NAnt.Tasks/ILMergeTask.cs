@@ -34,13 +34,13 @@ namespace ILMerge.NAnt.Tasks
 
     using System;
 
-    using global::ILMerging;
+    using ILMerging;
 
     using global::NAnt.Core;
     using global::NAnt.Core.Attributes;
     using global::NAnt.Core.Types;
     using global::NAnt.Core.Util;
-using System.Collections.Generic;
+    using System.Collections.Generic;
 
     [TaskName("ilmerge")]
     public class ILMergeTask : Task
@@ -69,11 +69,14 @@ using System.Collections.Generic;
                 return m_attributeFile != null ?
                     Project.GetFullPath(m_attributeFile) : null;
             }
-            set { m_attributeFile = StringUtils.ConvertEmptyToNull(value); }
+            set
+            {
+                m_attributeFile = StringUtils.ConvertEmptyToNull(value);
+            }
         }
 
         [TaskAttribute("closed")]
-        [BooleanValidator()]
+        [BooleanValidator]
         public virtual bool Closed
         {
             get { return m_closed; }
@@ -81,7 +84,7 @@ using System.Collections.Generic;
         }
 
         [TaskAttribute("copyattributes")]
-        [BooleanValidator()]
+        [BooleanValidator]
         public virtual bool CopyAttributes
         {
             get { return m_copyAttributes; }
@@ -89,7 +92,7 @@ using System.Collections.Generic;
         }
 
         [TaskAttribute("debuginfo")]
-        [BooleanValidator()]
+        [BooleanValidator]
         public virtual bool DebugInfo
         {
             get { return m_debugInfo; }
@@ -104,11 +107,14 @@ using System.Collections.Generic;
                 return m_excludeFile != null ?
                     Project.GetFullPath(m_excludeFile) : null;
             }
-            set { m_excludeFile = StringUtils.ConvertEmptyToNull(value); }
+            set
+            {
+                m_excludeFile = StringUtils.ConvertEmptyToNull(value);
+            }
         }
 
         [TaskAttribute("internalize")]
-        [BooleanValidator()]
+        [BooleanValidator]
         public virtual bool Internalize
         {
             get { return m_internalize; }
@@ -123,7 +129,7 @@ using System.Collections.Generic;
         }
 
         [TaskAttribute("shouldlog")]
-        [BooleanValidator()]
+        [BooleanValidator]
         public virtual bool ShouldLog
         {
             get { return m_log; }
@@ -138,7 +144,10 @@ using System.Collections.Generic;
                 return m_logFile != null ?
                     Project.GetFullPath(m_logFile) : null;
             }
-            set { m_logFile = StringUtils.ConvertEmptyToNull(value); }
+            set
+            {
+                m_logFile = StringUtils.ConvertEmptyToNull(value);
+            }
         }
 
         [TaskAttribute("outputfile", Required = true)]
@@ -150,7 +159,10 @@ using System.Collections.Generic;
                 return m_outputFile != null ?
                     Project.GetFullPath(m_outputFile) : null;
             }
-            set { m_outputFile = StringUtils.ConvertEmptyToNull(value); }
+            set
+            {
+                m_outputFile = StringUtils.ConvertEmptyToNull(value);
+            }
         }
 
         [TaskAttribute("snkfile")]
@@ -161,7 +173,10 @@ using System.Collections.Generic;
                 return m_keyFile != null ?
                     Project.GetFullPath(m_keyFile) : null;
             }
-            set { m_keyFile = StringUtils.ConvertEmptyToNull(value); }
+            set
+            {
+                m_keyFile = StringUtils.ConvertEmptyToNull(value);
+            }
         }
 
         [BuildElement("assemblies", Required = true)]
@@ -175,7 +190,10 @@ using System.Collections.Generic;
         [StringValidator(AllowEmpty = false)]
         public virtual string TargetKind
         {
-            get { return m_targetKind; }
+            get
+            {
+                return m_targetKind;
+            }
             set
             {
                 m_targetKind = StringUtils.ConvertEmptyToNull(value);

@@ -1,9 +1,9 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.NAnt.Tasks", "ILMerge.NAnt.Tasks\ILMerge.NAnt.Tasks.csproj", "{C54806C2-94A8-4168-B039-F58DF25319C0}"
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.NAnt.Tasks", "ILMerge.NAnt.Tasks\ILMerge.NAnt.Tasks.2005.csproj", "{C54806C2-94A8-4168-B039-F58DF25319C0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.MSBuild.Tasks", "ILMerge.MSBuild.Tasks\ILMerge.MSBuild.Tasks.csproj", "{010A9219-E155-4A39-9194-A6FD8743D0CA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.MSBuild.Tasks", "ILMerge.MSBuild.Tasks\ILMerge.MSBuild.Tasks.2005.csproj", "{010A9219-E155-4A39-9194-A6FD8743D0CA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

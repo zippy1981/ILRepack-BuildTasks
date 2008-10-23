@@ -29,41 +29,36 @@
  *
  *****************************************************************************/
 
-namespace ILMerge.NAnt.Tasks
+namespace ILMerge.MSBuild.Tasks 
 {
-
-    using System;
-
-    using global::ILMerging;
-
-    using global::Microsoft.Build.Framework;
-    using global::Microsoft.Build.Utilities;
     using System.Collections.Generic;
 
-    public class ILMerge : Task
-    {
+    using System;
+    using Microsoft.Build.Framework;
+    using Microsoft.Build.Utilities;
 
+    using ILM = ILMerging;
+    
+    public class ILMerge : Task 
+    {
         private string m_attributeFile;
         private bool m_closed;
         private bool m_copyAttributes;
         private bool m_debugInfo;
         private string m_excludeFile;
         private bool m_internalize;
-        private ITaskItem[] m_libraryPath;
+        private ITaskItem[] m_libraryPath = new ITaskItem[0];
         private bool m_log;
         private string m_logFile;
         private string m_outputFile;
         private string m_keyFile;
-        private ITaskItem[] m_assemblies;
+        private ITaskItem[] m_assemblies = new ITaskItem[0];
         private ILMerging.ILMerge.Kind m_targetKind;
         private ILMerging.ILMerge ILMerger;
 
         public virtual string AttributeFile
         {
-            get
-            {
-                return m_attributeFile;
-            }
+            get { return m_attributeFile; }
             set { m_attributeFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
@@ -87,10 +82,7 @@ namespace ILMerge.NAnt.Tasks
 
         public virtual string ExcludeFile
         {
-            get
-            {
-                return m_excludeFile;
-            }
+            get { return m_excludeFile; }
             set { m_excludeFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
@@ -114,29 +106,20 @@ namespace ILMerge.NAnt.Tasks
 
         public virtual string LogFile
         {
-            get
-            {
-                return m_logFile;
-            }
+            get { return m_logFile; }
             set { m_logFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
         [Required]
         public virtual string OutputFile
         {
-            get
-            {
-                return m_outputFile;
-            }
+            get { return m_outputFile; }
             set { m_outputFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
         public virtual string SnkFile
         {
-            get
-            {
-                return m_keyFile;
-            }
+            get { return m_keyFile; }
             set { m_keyFile = BuildPath(ConvertEmptyToNull(value)); }
         }
 
@@ -149,24 +132,27 @@ namespace ILMerge.NAnt.Tasks
 
         public virtual string TargetKind
         {
-            get { return m_targetKind.ToString(); }
+            get
+            {
+                return m_targetKind.ToString();
+            }
             set
             {
-                if (Enum.IsDefined(typeof(ILMerging.ILMerge.Kind), value))
+                if (Enum.IsDefined(typeof(ILM.ILMerge.Kind), value))
                 {
-                    m_targetKind = (ILMerging.ILMerge.Kind) Enum.Parse(typeof(ILMerging.ILMerge.Kind), value);
+                    m_targetKind = (ILM.ILMerge.Kind) Enum.Parse(typeof(ILM.ILMerge.Kind), value);
                 }
                 else
                 {
                     Log.LogWarning("TargetKind should be [Exe|Dll|WinExe|SameAsPrimaryAssembly]; set to SameAsPrimaryAssembly");
-                    m_targetKind = ILMerging.ILMerge.Kind.SameAsPrimaryAssembly;
+                    m_targetKind = ILM.ILMerge.Kind.SameAsPrimaryAssembly;
                 }
             }
         }
 
         public override bool Execute()
         {
-            ILMerger = new ILMerging.ILMerge();
+            ILMerger = new ILM.ILMerge();
             ILMerger.AttributeFile = m_attributeFile;
             ILMerger.Closed = m_closed;
             ILMerger.CopyAttributes = m_copyAttributes;
@@ -209,7 +195,7 @@ namespace ILMerge.NAnt.Tasks
             return true;
         }
 
-        private string ConvertEmptyToNull(string iti)
+        private static string ConvertEmptyToNull(string iti)
         {
             return string.IsNullOrEmpty(iti) ? null : iti;
         }
