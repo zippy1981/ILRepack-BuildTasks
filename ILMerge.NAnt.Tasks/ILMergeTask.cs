@@ -57,6 +57,7 @@ namespace ILMerge.NAnt.Tasks
         private string m_logFile;
         private string m_outputFile;
         private string m_keyFile;
+        private FileSet m_primaryAssembly;
         private FileSet m_assemblies;
         private string m_targetKind;
         private ILMerge ILMerge;
@@ -178,8 +179,15 @@ namespace ILMerge.NAnt.Tasks
                 m_keyFile = StringUtils.ConvertEmptyToNull(value);
             }
         }
+        
+        [BuildElement("primaryassembly", Required = true)]
+        public virtual FileSet PrimaryAssembly
+        {
+            get { return m_primaryAssembly; }
+            set { m_primaryAssembly = value; }
+        }
 
-        [BuildElement("assemblies", Required = true)]
+        [BuildElement("assemblies")]
         public virtual FileSet InputAssemblies
         {
             get { return m_assemblies; }
@@ -234,10 +242,16 @@ namespace ILMerge.NAnt.Tasks
                         "TargetKind should be [exe|dll|winexe|sameasprimary]");
             }
 
-            string[] assemblies = new string[m_assemblies.FileNames.Count];
-            for (int i = 0; i < assemblies.Length; i++)
+            string[] assemblies = new string[m_assemblies.FileNames.Count + 1];
+            if (this.m_primaryAssembly.FileNames.Count != 1)
             {
-                assemblies[i] = m_assemblies.FileNames[i];
+                this.Log(Level.Error, "Only one primary assembly is allowed in the <primaryassembly> fileset, but found {0}.", this.m_primaryAssembly.FileNames.Count);
+                return;
+            }
+            assemblies[0] = this.m_primaryAssembly.FileNames[0];
+            for (int i = 1; i < assemblies.Length; i++)
+            {
+                assemblies[i] = m_assemblies.FileNames[i-1];
             }
 
             ILMerge.SetInputAssemblies(assemblies);
