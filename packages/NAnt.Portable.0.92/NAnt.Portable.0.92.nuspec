@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>NAnt.Portable</id>
+    <version>0.92</version>
+    <title>NAnt Portable</title>
+    <authors>Svjatoslav</authors>
+    <owners>Svjatoslav</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>NAnt is a build tool that builds .NET projects and solutions (based on the original Ant for Java). It is also an XML-based "scripting" language where you order "tasks" to do the build work, including...</description>
+  </metadata>
+</package>
