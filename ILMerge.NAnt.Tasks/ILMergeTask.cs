@@ -34,7 +34,7 @@ namespace ILMerge.NAnt.Tasks
 
     using System;
 
-    using ILMerging;
+    using ILRepacking;
 
     using global::NAnt.Core;
     using global::NAnt.Core.Attributes;
@@ -60,7 +60,7 @@ namespace ILMerge.NAnt.Tasks
         private FileSet m_primaryAssembly;
         private FileSet m_assemblies;
         private string m_targetKind;
-        private ILMerge ILMerge;
+        private ILRepack ILMerge;
 
         [TaskAttribute("attributefile")]
         public virtual string AttributeFile
@@ -214,7 +214,7 @@ namespace ILMerge.NAnt.Tasks
 
         protected override void ExecuteTask()
         {
-            ILMerge = new ILMerge();
+            ILMerge = new ILRepack();
             ILMerge.AttributeFile = m_attributeFile;
             ILMerge.Closed = m_closed;
             ILMerge.CopyAttributes = m_copyAttributes;
@@ -229,13 +229,13 @@ namespace ILMerge.NAnt.Tasks
             switch (m_targetKind.ToLower())
             {
                 case "winexe":
-                    ILMerge.TargetKind = ILMerge.Kind.WinExe; break;
+                    ILMerge.TargetKind = ILRepack.Kind.WinExe; break;
                 case "exe":
-                    ILMerge.TargetKind = ILMerge.Kind.Exe; break;
+                    ILMerge.TargetKind = ILRepack.Kind.Exe; break;
                 case "dll":
-                    ILMerge.TargetKind = ILMerge.Kind.Dll; break;
+                    ILMerge.TargetKind = ILRepack.Kind.Dll; break;
                 case "sameasprimary":
-                    ILMerge.TargetKind = ILMerge.Kind.SameAsPrimaryAssembly;
+                    ILMerge.TargetKind = ILRepack.Kind.SameAsPrimaryAssembly;
                     break;
                 default:
                     throw new BuildException(
