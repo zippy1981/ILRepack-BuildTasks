@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.NAnt.Tasks", "ILMerge.NAnt.Tasks\ILMerge.NAnt.Tasks.csproj", "{C54806C2-94A8-4168-B039-F58DF25319C0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.MSBuild.Tasks", "ILMerge.MSBuild.Tasks\ILMerge.MSBuild.Tasks.csproj", "{010A9219-E155-4A39-9194-A6FD8743D0CA}"
