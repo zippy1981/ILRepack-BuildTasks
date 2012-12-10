@@ -37,7 +37,7 @@ namespace ILMerge.MSBuild.Tasks
     using Microsoft.Build.Framework;
     using Microsoft.Build.Utilities;
 
-    using ILM = ILMerging;
+    using ILM = ILRepacking.ILRepack;
     
     public class ILMerge : Task 
     {
@@ -53,8 +53,8 @@ namespace ILMerge.MSBuild.Tasks
         private string m_outputFile;
         private string m_keyFile;
         private ITaskItem[] m_assemblies = new ITaskItem[0];
-        private ILMerging.ILMerge.Kind m_targetKind;
-        private ILMerging.ILMerge ILMerger;
+        private ILRepacking.ILRepack.Kind m_targetKind;
+        private ILRepacking.ILRepack ILMerger;
 
         public virtual string AttributeFile
         {
@@ -138,21 +138,21 @@ namespace ILMerge.MSBuild.Tasks
             }
             set
             {
-                if (Enum.IsDefined(typeof(ILM.ILMerge.Kind), value))
+                if (Enum.IsDefined(typeof(ILM.Kind), value))
                 {
-                    m_targetKind = (ILM.ILMerge.Kind) Enum.Parse(typeof(ILM.ILMerge.Kind), value);
+                    m_targetKind = (ILM.Kind) Enum.Parse(typeof(ILM.Kind), value);
                 }
                 else
                 {
                     Log.LogWarning("TargetKind should be [Exe|Dll|WinExe|SameAsPrimaryAssembly]; set to SameAsPrimaryAssembly");
-                    m_targetKind = ILM.ILMerge.Kind.SameAsPrimaryAssembly;
+                    m_targetKind = ILM.Kind.SameAsPrimaryAssembly;
                 }
             }
         }
 
         public override bool Execute()
         {
-            ILMerger = new ILM.ILMerge();
+            ILMerger = new ILM();
             ILMerger.AttributeFile = m_attributeFile;
             ILMerger.Closed = m_closed;
             ILMerger.CopyAttributes = m_copyAttributes;

@@ -5,6 +5,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.NAnt.Tasks", "ILMer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ILMerge.MSBuild.Tasks", "ILMerge.MSBuild.Tasks\ILMerge.MSBuild.Tasks.csproj", "{010A9219-E155-4A39-9194-A6FD8743D0CA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{1B896728-6C18-45BD-B210-6EDAFC6D1AB6}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+		.nuget\packages.config = .nuget\packages.config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
